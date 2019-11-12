@@ -240,3 +240,4 @@ fabric.properties
 
 # End of https://www.gitignore.io/api/gradle,kotlin,android,androidstudio
 
+**/.idea/**

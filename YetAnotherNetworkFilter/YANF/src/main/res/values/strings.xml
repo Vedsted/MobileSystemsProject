@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">YANF</string>
+    <string name="stop_yanf">Stop YANF</string>
+    <string name="start_yanf">Start YANF</string>
+</resources>
