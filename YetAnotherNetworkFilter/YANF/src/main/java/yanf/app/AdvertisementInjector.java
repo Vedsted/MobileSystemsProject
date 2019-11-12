@@ -11,19 +11,20 @@ import com.github.megatronking.netbare.injector.SimpleHttpInjector;
 import java.io.IOException;
 import java.util.HashSet;
 
-public class CookieInterceptor extends SimpleHttpInjector {
+public class AdvertisementInjector extends SimpleHttpInjector {
 
     private HttpRequestHeaderPart mHoldRequestHeader;
 
     private HashSet<String> blacklist;
 
-    public CookieInterceptor() {
+    public AdvertisementInjector() {
         this.blacklist = new HashSet<>();
     }
 
 
-    public CookieInterceptor(HashSet<String> blacklist) {
+    public AdvertisementInjector(HashSet<String> blacklist) {
         this.blacklist = blacklist;
+        this.blacklist.add("adnami.io");
     }
 
     @Override
@@ -31,38 +32,32 @@ public class CookieInterceptor extends SimpleHttpInjector {
 
         for (String s : blacklist) {
             if (request.url().contains(s)){
-                Log.i("Cookie Remover", "removing cookies for: " + request.url());
+                Log.i("AdvertisementInjector", "removing advertisements for: " + request.url());
                 return true;
             }
         }
 
-        Log.i("Cookie Remover", "Passage allowed for url: : " + request.url());
+        Log.i("AdvertisementInjector", "Passage allowed for url: : " + request.url());
         return false;
     }
 
     @Override
     public void onRequestInject(HttpRequestHeaderPart header, InjectorCallback callback) throws IOException {
-        mHoldRequestHeader = header;
+        //mHoldRequestHeader = header;
 
-        super.onRequestInject(header, callback);
+        //super.onRequestInject(header, callback);
+
+        // Ignore
     }
 
     @Override
     public void onRequestInject(HttpRequest request, HttpBody body, InjectorCallback callback) throws IOException {
-        if (mHoldRequestHeader == null) {
-            // rarely happens.
-            return;
-        }
 
-        HttpRequestHeaderPart injectHeader = mHoldRequestHeader.newBuilder().removeHeader("Cookie").build();
-
-        callback.onFinished(injectHeader);
-
-        mHoldRequestHeader = null;
+        // ignore
     }
 
     @Override
     public void onRequestFinished(HttpRequest request) {
-        super.onRequestFinished(request);
+        // Ignore
     }
 }

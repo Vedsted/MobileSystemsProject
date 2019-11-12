@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Spinner;
 
 
 import com.github.megatronking.netbare.NetBare;
@@ -21,7 +23,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NetBareListener {
+public class MainActivity extends AppCompatActivity implements NetBareListener, AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "MainActivity";
     private int REQUEST_CODE_PREPARE = 1;
@@ -31,16 +33,23 @@ public class MainActivity extends AppCompatActivity implements NetBareListener {
 
     private Button mActionButton;
 
+    private MozillaBlackList blackList;
+    private String currentlySelectedBlackList;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        this.blackList = LoadBlackList.loadBlackList(this);
+        ((Spinner)findViewById(R.id.spinner)).setOnItemSelectedListener(this);
 
         mNetBare = NetBare.get();
 
         mActionButton = findViewById(R.id.action);
         mActionButton.setOnClickListener((View view) -> {
             if (mNetBare.isActive()) {
+                mNetBare.unregisterNetBareListener(this);
                 mNetBare.stop();
             } else {
                 prepareNetBare();
@@ -101,10 +110,20 @@ public class MainActivity extends AppCompatActivity implements NetBareListener {
     }
 
     private List<HttpInterceptorFactory> interceptorFactories() {
-        HttpInterceptorFactory interceptor = HttpInjectInterceptor.createFactory(new CookieInterceptor());
+        //HttpInterceptorFactory interceptor = HttpInjectInterceptor.createFactory(new CookieInterceptor(this.blackList.getDomains(this.currentlySelectedBlackList)));
+        HttpInterceptorFactory interceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector(this.blackList.getDomains(this.currentlySelectedBlackList)));
 
 
         return Arrays.asList(interceptor);
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+        this.currentlySelectedBlackList = String.valueOf(parent.getItemAtPosition(pos));
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+        // fuck this
+    }
 }

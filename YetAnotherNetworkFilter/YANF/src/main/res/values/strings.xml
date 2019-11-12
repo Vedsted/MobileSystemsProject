@@ -2,4 +2,13 @@
     <string name="app_name">YANF</string>
     <string name="stop_yanf">Stop YANF</string>
     <string name="start_yanf">Start YANF</string>
+    <string-array name="blacklist_categories">
+        <item>None</item>
+        <item>Advertising</item>
+        <item>Content</item>
+        <item>Fingerprinting</item>
+        <item>Social</item>
+        <item>Disconnect</item>
+        <item>Paranoid</item>
+    </string-array>
 </resources>
