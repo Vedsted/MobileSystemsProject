@@ -65,4 +65,14 @@ public class CookieInterceptor extends SimpleHttpInjector {
     public void onRequestFinished(HttpRequest request) {
         super.onRequestFinished(request);
     }
+
+    public String getDomainName(String url) {
+        try {
+            URI uri = new URI(url);
+            String domain = uri.getHost();
+            return domain.startsWith("www.") ? domain.substring(4) : domain;
+        } catch(URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
 }
