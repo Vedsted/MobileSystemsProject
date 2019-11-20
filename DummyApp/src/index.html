@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<script>
+    const serverAdd = "http://10.94.122.2:8080/mean";
+
+    async function x() {
+        const data = [[56.2568605075, 10.0688809242],
+            [56.2569285685, 10.0690189741],
+            [56.2569280656, 10.0690437007],
+            [56.2569418958, 10.069059794]];
+
+        var body = {
+            data: data,
+            filterGranularity: 3
+        };
+
+        document.cookie = 'ClientCookie=ClientCookieValue';
+
+        var res = await fetch(serverAdd, {
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify(body),
+            credentials: "same-origin",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+
+        });
+
+        console.log(await res.json());
+    }
+
+    x();
+
+</script>
+</body>
+</html>
