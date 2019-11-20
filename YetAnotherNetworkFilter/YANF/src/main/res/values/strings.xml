@@ -2,6 +2,7 @@
     <string name="app_name">YANF</string>
     <string name="stop_yanf">Stop YANF</string>
     <string name="start_yanf">Start YANF</string>
+    <string name="category_to_filter">Category to filter</string>
     <string-array name="blacklist_categories">
         <item>None</item>
         <item>Advertising</item>

@@ -9,6 +9,8 @@ import com.github.megatronking.netbare.injector.InjectorCallback;
 import com.github.megatronking.netbare.injector.SimpleHttpInjector;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashSet;
 
 public class CookieInterceptor extends SimpleHttpInjector {
@@ -16,6 +18,8 @@ public class CookieInterceptor extends SimpleHttpInjector {
     private HttpRequestHeaderPart mHoldRequestHeader;
 
     private HashSet<String> blacklist;
+
+    private String TAG = "CookieInterceptor";
 
     public CookieInterceptor() {
         this.blacklist = new HashSet<>();
@@ -29,14 +33,12 @@ public class CookieInterceptor extends SimpleHttpInjector {
     @Override
     public boolean sniffRequest(HttpRequest request) {
 
-        for (String s : blacklist) {
-            if (request.url().contains(s)){
-                Log.i("Cookie Remover", "removing cookies for: " + request.url());
-                return true;
-            }
+        if (blacklist.contains(getDomainName(request.url()))){
+            Log.i(TAG, "removing cookies for: " + request.url());
+            return true;
         }
 
-        Log.i("Cookie Remover", "Passage allowed for url: : " + request.url());
+        //Log.i("Cookie Remover", "Passage allowed for url: : " + request.url());
         return false;
     }
 
@@ -66,13 +68,27 @@ public class CookieInterceptor extends SimpleHttpInjector {
         super.onRequestFinished(request);
     }
 
-    public String getDomainName(String url) {
+    private String getDomainName(String url) {
+        String domain = "No Domain Found";
+
         try {
             URI uri = new URI(url);
-            String domain = uri.getHost();
-            return domain.startsWith("www.") ? domain.substring(4) : domain;
+            domain = uri.getHost();
+            Log.i(TAG, "getDomainName: Found domain name: " + domain);
         } catch(URISyntaxException e) {
-            e.printStackTrace();
+            Log.i(TAG, "getDomainName: Syntax error in URL: " + url);
+            String[] split = url.split("/");
+            domain = split[2];
+            URI uri = null;
+            try {
+                uri = new URI(url);
+            } catch (URISyntaxException ex) {
+                ex.printStackTrace();
+            }
+            domain = uri.getHost();
+            Log.i(TAG, "getDomainName: Found domain name: " + domain);
         }
+
+        return domain.startsWith("www.") ? domain.substring(4) : domain;
     }
 }

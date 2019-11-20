@@ -241,3 +241,7 @@ fabric.properties
 # End of https://www.gitignore.io/api/gradle,kotlin,android,androidstudio
 
 **/.idea/**
+DummyApp/client/node_modules/
+DummyApp/server/node_modules/
+DummyApp/server/package-lock.json
+DummyApp/client/package-lock.json

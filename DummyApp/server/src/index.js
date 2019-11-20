@@ -5,14 +5,15 @@ let arguments = process.argv.splice(2);
 const express = require('express');
 const app = express();
 
-app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+//app.use(express.json()) // for parsing application/json
+//app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 app.use(cors());
 
 const port = arguments[0] || 8081;
 
 
 app.post('/median', (req, res, next) => {
+    console.log(req.body);
     let data = req.body.data;
     let filterGranularity = req.body.filterGranularity;
 
@@ -20,6 +21,7 @@ app.post('/median', (req, res, next) => {
 });
 
 app.post('/mean', (req, res, next) => {
+    console.log(req.body);
     let data = req.body.data;
     let filterGranularity = req.body.filterGranularity;
 

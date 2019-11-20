@@ -39,15 +39,15 @@ public class BlackListDeserializer implements JsonDeserializer<MozillaBlackList>
             String name = "";
             String website = "";
 
-            for (String s : company.getAsJsonObject().keySet()) {
-                // Company names
+            for (String companyName : company.getAsJsonObject().keySet()) {
+                // Company name
 
-                name = s;
-                JsonObject companyNameObj = company.getAsJsonObject().get(s).getAsJsonObject();
+                name = companyName;
+                JsonObject companyNameObj = company.getAsJsonObject().get(companyName).getAsJsonObject();
                 for(String mainURL : companyNameObj.keySet()){
                     website = mainURL;
 
-                    companyNameObj.get(mainURL).getAsJsonArray().forEach(jsonElement -> domains.add(jsonElement.getAsString()));
+                    companyNameObj.get(mainURL).getAsJsonArray().forEach(domainElement -> domains.add(domainElement.getAsString()));
                 }
             }
 
