@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
 
     @Override
     public void onDestroy() {
+        Log.i(TAG, "onDestroy: Netbare destroyed");
         super.onDestroy();
         mNetBare.unregisterNetBareListener(this);
         mNetBare.stop();
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
             return;
         }
         // Start the NetBare service
+        Log.i(TAG, "prepareNetBare: Netbare starting");
         mNetBare.start(NetBareConfig.defaultHttpConfig(App.getInstance().getJSK(), interceptorFactories()));
     }
 
@@ -111,7 +113,8 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
 
     private List<HttpInterceptorFactory> interceptorFactories() {
         //HttpInterceptorFactory interceptor = HttpInjectInterceptor.createFactory(new CookieInterceptor(this.blackList.getDomains(this.currentlySelectedBlackList)));
-        HttpInterceptorFactory interceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector(this.blackList.getDomains(this.currentlySelectedBlackList)));
+        //HttpInterceptorFactory interceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector(this.blackList.getDomains(this.currentlySelectedBlackList)));
+        HttpInterceptorFactory interceptor = HttpInjectInterceptor.createFactory(new CookieInterceptor());
 
 
         return Arrays.asList(interceptor);

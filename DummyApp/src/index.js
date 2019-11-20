@@ -32,8 +32,10 @@ app.post('/median', (req, res, next) => {
 
 
 app.post('/mean', (req, res, next) => {
-    console.log(req.headers.cookie)
+    console.log('Oi')
+    console.log("Cookies: " + req.headers.cookie);
     let data = req.body.data;
+    console.log(data);
     let filterGranularity = req.body.filterGranularity;
 
     res.cookie('TrackingCookie', 'TrackingCookieValue')

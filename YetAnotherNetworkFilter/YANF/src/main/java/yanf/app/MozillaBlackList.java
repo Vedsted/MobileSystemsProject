@@ -76,9 +76,6 @@ public class MozillaBlackList {
     }
 
     private HashSet<String> extractDomains(ArrayList<Company> companies) {
-        return companies.stream().map(company -> company.getDomains()).reduce((h1, h2) -> {
-            h1.addAll(h2);
-            return h1;
-        }).get();
+        return companies.stream().map(Company::getDomains).reduce((h1, h2) -> {h1.addAll(h2);return h1;}).get();
     }
 }
