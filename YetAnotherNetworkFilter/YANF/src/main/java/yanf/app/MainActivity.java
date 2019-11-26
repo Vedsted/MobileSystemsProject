@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
@@ -20,6 +21,7 @@ import com.github.megatronking.netbare.http.HttpInterceptorFactory;
 import com.github.megatronking.netbare.ssl.JKS;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
 
     private MozillaBlackList blackList;
     private String currentlySelectedBlackList;
+    private AdvertisementInjector ads = new AdvertisementInjector();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -116,13 +119,29 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
         //HttpInterceptorFactory interceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector(this.blackList.getDomains(this.currentlySelectedBlackList)));
         HttpInterceptorFactory interceptor = HttpInjectInterceptor.createFactory(new CookieInterceptor());
 
+        HttpInterceptorFactory adsInterceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector());
 
-        return Arrays.asList(interceptor);
+       // return Arrays.asList(interceptor);
+
+        //Arrays.asList(adsInterceptor);
+        //Arrays.asList(interceptor);
+        return Arrays.asList(adsInterceptor);
     }
+
+    //private List<HttpInterceptorFactory>
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         this.currentlySelectedBlackList = String.valueOf(parent.getItemAtPosition(pos));
+        if (currentlySelectedBlackList == "Advertising") {
+            HttpInterceptorFactory ads = HttpInjectInterceptor.createFactory(new AdvertisementInjector());
+            ads.create();
+        }
+        if(currentlySelectedBlackList == "Paranoid") {
+            HttpInterceptorFactory cookies = HttpInjectInterceptor.createFactory(new CookieInterceptor());
+            cookies.create();
+        }
+
     }
 
     @Override

@@ -23,6 +23,8 @@ import com.github.megatronking.netbare.http.HttpRequestHeaderPart;
 import com.github.megatronking.netbare.http.HttpResponse;
 import com.github.megatronking.netbare.http.HttpResponseHeaderPart;
 
+import java.io.IOException;
+
 /**
  * An injector can block http request and response. Add your custom rules in
  * {@link #sniffRequest(HttpRequest)} or {@link #sniffResponse(HttpResponse)} to filter the request.
@@ -33,7 +35,7 @@ import com.github.megatronking.netbare.http.HttpResponseHeaderPart;
 public abstract class BlockedHttpInjector implements HttpInjector {
 
     @Override
-    public final void onRequestInject(@NonNull HttpRequestHeaderPart header,
+    public void onRequestInject(@NonNull HttpRequestHeaderPart header,
                                 @NonNull InjectorCallback callback) {
     }
 
@@ -43,8 +45,8 @@ public abstract class BlockedHttpInjector implements HttpInjector {
     }
 
     @Override
-    public final void onRequestInject(@NonNull HttpRequest request, @NonNull HttpBody body,
-                                @NonNull InjectorCallback callback) {
+    public void onRequestInject(@NonNull HttpRequest request, @NonNull HttpBody body,
+                                @NonNull InjectorCallback callback) throws IOException {
     }
 
     @Override
