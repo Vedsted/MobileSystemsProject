@@ -25,15 +25,7 @@ public class AdvertisementInjector extends SimpleHttpInjector {
 
     private HttpRequest httpRequest;
     private HashSet<String> blacklist;
-    private HttpRequestHeaderPart mHoldRequestHeader;
 
-
-
-    public AdvertisementInjector() {
-        this.blacklist = new HashSet<>();
-        this.blacklist.add("10.94.122.2");
-        this.blacklist.add("facebook.com");
-    }
 
     public AdvertisementInjector(HashSet<String> blacklist) {
         this.blacklist = blacklist;
@@ -42,7 +34,6 @@ public class AdvertisementInjector extends SimpleHttpInjector {
     @Override
     public boolean sniffRequest(@NonNull HttpRequest request) {
         httpRequest = request;
-        ByteBuffer buffer;
 
         for (String s : blacklist) {
             if (httpRequest.url().contains(s)) {
@@ -51,7 +42,7 @@ public class AdvertisementInjector extends SimpleHttpInjector {
             }
         }
 
-        Log.i("AdvertisementInjector", "Passage allowed for url: : " + httpRequest.url());
+        Log.i("AdvertisementInjector", "Passage allowed for url: " + httpRequest.url());
         return false;
     }
 
@@ -60,31 +51,14 @@ public class AdvertisementInjector extends SimpleHttpInjector {
         return false;
     }
 
-    /**
-     * @Override public boolean sniffRequest(HttpRequest request) {
-     * httpRequest = request;
-     * <p>
-     * for (String s : blacklist) {
-     * if (httpRequest.url().contains(s)){
-     * Log.i("AdvertisementInjector", "removing advertisements for: " + httpRequest.url());
-     * return true;
-     * }
-     * }
-     * <p>
-     * Log.i("AdvertisementInjector", "Passage allowed for url: : " + httpRequest.url());
-     * return false;
-     * }
-     **/
-
     @Override
-    public void onRequestInject(HttpRequestHeaderPart header, InjectorCallback callback) throws IOException { }
+    public void onRequestInject(HttpRequestHeaderPart header, InjectorCallback callback) { }
 
     @Override
     public void onRequestInject(HttpRequest request, HttpBody body, InjectorCallback callback) throws IOException {
           httpRequest = request;
           ByteStream byteStream = new ByteStream(new byte[1]);
           callback.onFinished(byteStream);
-          Log.i("AdvertisementInjector", "This site is blocked");
     }
 
     @Override

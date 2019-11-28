@@ -4,6 +4,8 @@ package yanf.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +13,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.ToggleButton;
 
 
 import com.github.megatronking.netbare.NetBare;
@@ -23,29 +27,48 @@ import com.github.megatronking.netbare.ssl.JKS;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class MainActivity extends AppCompatActivity implements NetBareListener, AdapterView.OnItemSelectedListener {
-
     private static final String TAG = "MainActivity";
     private int REQUEST_CODE_PREPARE = 1;
-
 
     private NetBare mNetBare;
 
     private Button mActionButton;
+    private ToggleButton adsButton;
+    private ToggleButton cookieButton;
 
-    private MozillaBlackList blackList;
+    private boolean adsClicked = false;
+    private boolean cookieClicked = false;
+
     private String currentlySelectedBlackList;
-    private AdvertisementInjector ads = new AdvertisementInjector();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        this.blackList = LoadBlackList.loadBlackList(this);
         ((Spinner)findViewById(R.id.spinner)).setOnItemSelectedListener(this);
+
+        cookieButton = findViewById(R.id.cookieButton);
+        cookieButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("Cookie button ", "is clicked");
+                cookieClicked = true;
+            }
+        });
+
+        adsButton = findViewById(R.id.adsButton);
+        adsButton.setOnClickListener(v -> {
+            Log.i("Advertisement button ", "is clicked");
+            adsClicked = true;
+        });
 
         mNetBare = NetBare.get();
 
@@ -75,12 +98,10 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
         this.runOnUiThread(() -> mActionButton.setText(R.string.stop_yanf));
     }
 
-
     @Override
     public void onServiceStopped() {
         this.runOnUiThread(() -> mActionButton.setText(R.string.start_yanf));
     }
-
 
     private void prepareNetBare() {
         // Install a self-signed certificate
@@ -101,9 +122,17 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
             startActivityForResult(intent, REQUEST_CODE_PREPARE);
             return;
         }
+
         // Start the NetBare service
         Log.i(TAG, "prepareNetBare: Netbare starting");
-        mNetBare.start(NetBareConfig.defaultHttpConfig(App.getInstance().getJSK(), interceptorFactories()));
+
+        if(adsClicked) {
+            mNetBare.start(NetBareConfig.defaultHttpConfig(App.getInstance().getJSK(), adsInterceptor()));
+        }
+
+        if (cookieClicked) {
+            mNetBare.start(NetBareConfig.defaultHttpConfig(App.getInstance().getJSK(), cookiesInterceptor()));
+        }
     }
 
     @Override
@@ -114,38 +143,35 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
         }
     }
 
-    private List<HttpInterceptorFactory> interceptorFactories() {
-        //HttpInterceptorFactory interceptor = HttpInjectInterceptor.createFactory(new CookieInterceptor(this.blackList.getDomains(this.currentlySelectedBlackList)));
-        //HttpInterceptorFactory interceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector(this.blackList.getDomains(this.currentlySelectedBlackList)));
-        HttpInterceptorFactory interceptor = HttpInjectInterceptor.createFactory(new CookieInterceptor());
-
-        HttpInterceptorFactory adsInterceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector());
-
-       // return Arrays.asList(interceptor);
-
-        //Arrays.asList(adsInterceptor);
-        //Arrays.asList(interceptor);
-        return Arrays.asList(adsInterceptor);
+    private List<HttpInterceptorFactory> adsInterceptor() {
+        //HttpInterceptorFactory adInterceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector(loadedBlackList));
+        HttpInterceptorFactory adInterceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector(LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList)));
+        return Arrays.asList(adInterceptor);
     }
 
-    //private List<HttpInterceptorFactory>
+    private List<HttpInterceptorFactory> cookiesInterceptor() {
+       // HashSet<String> list = LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList);
+       // HttpInterceptorFactory cookieInterceptor = HttpInjectInterceptor.createFactory(new CookieInterceptor(loadedBlackList));
+        HttpInterceptorFactory cookieInterceptor = HttpInjectInterceptor.createFactory(new CookieInterceptor(LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList)));
+        return Arrays.asList(cookieInterceptor);
+    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         this.currentlySelectedBlackList = String.valueOf(parent.getItemAtPosition(pos));
-        if (currentlySelectedBlackList == "Advertising") {
-            HttpInterceptorFactory ads = HttpInjectInterceptor.createFactory(new AdvertisementInjector());
-            ads.create();
-        }
-        if(currentlySelectedBlackList == "Paranoid") {
-            HttpInterceptorFactory cookies = HttpInjectInterceptor.createFactory(new CookieInterceptor());
-            cookies.create();
-        }
-
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-        // fuck this
+    public void onNothingSelected(AdapterView<?> adapterView) { }
+
+   // private List<HttpInterceptorFactory> interceptorFactories() {
+        //LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList);
+            // HttpInterceptorFactory cookieInterceptor = HttpInjectInterceptor.createFactory(new CookieInterceptor(this.blackList.getDomains(this.currentlySelectedBlackList)));
+            // HttpInterceptorFactory adsInterceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector(this.blackList.getDomains(this.currentlySelectedBlackList)));
+          //  HttpInterceptorFactory interceptor = HttpInjectInterceptor.createFactory(new CookieInterceptor());
+          //  HttpInterceptorFactory adsInterceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector());
+
+       // return Arrays.asList(adsInterceptor);
+      //  }
+
     }
-}

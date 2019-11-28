@@ -15,17 +15,9 @@ import java.io.IOException;
 import java.util.HashSet;
 
 public class CookieInterceptor extends SimpleHttpInjector {
-
+    private HttpRequest httpRequest;
     private HttpRequestHeaderPart mHoldRequestHeader;
-
     private HashSet<String> blacklist;
-
-    public CookieInterceptor() {
-        this.blacklist = new HashSet<>();
-        this.blacklist.add("10.94.122.2");
-        this.blacklist.add("sso.sdu.dk");
-    }
-
 
     public CookieInterceptor(HashSet<String> blacklist) {
         this.blacklist = blacklist;
@@ -33,15 +25,15 @@ public class CookieInterceptor extends SimpleHttpInjector {
 
     @Override
     public boolean sniffRequest(HttpRequest request) {
-
+        httpRequest = request;
         for (String s : blacklist) {
-            if (request.url().contains(s)){
-                Log.i("Cookie Remover", "removing cookies for: " + request.url());
+            if (httpRequest.url().contains(s)){
+                Log.i("Cookie Remover", "removing cookies for: " + httpRequest.url());
                 return true;
             }
         }
 
-        Log.i("Cookie Remover", "Passage allowed for url: : " + request.url());
+        Log.i("Cookie Remover", "Passage allowed for url: " + httpRequest.url());
         return false;
     }
 
