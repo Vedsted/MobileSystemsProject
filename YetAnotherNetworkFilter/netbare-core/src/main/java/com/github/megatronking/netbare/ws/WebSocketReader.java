@@ -31,6 +31,7 @@
 package com.github.megatronking.netbare.ws;
 
 import com.github.megatronking.netbare.NetBareUtils;
+import com.github.megatronking.netbare.http.HttpRequest;
 
 import java.io.IOException;
 import java.io.InputStream;

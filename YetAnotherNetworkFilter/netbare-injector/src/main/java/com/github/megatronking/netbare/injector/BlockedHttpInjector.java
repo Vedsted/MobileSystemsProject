@@ -36,7 +36,7 @@ public abstract class BlockedHttpInjector implements HttpInjector {
 
     @Override
     public void onRequestInject(@NonNull HttpRequestHeaderPart header,
-                                @NonNull InjectorCallback callback) {
+                                @NonNull InjectorCallback callback) throws IOException {
     }
 
     @Override

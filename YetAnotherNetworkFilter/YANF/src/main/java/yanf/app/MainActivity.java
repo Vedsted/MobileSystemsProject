@@ -56,12 +56,9 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
         ((Spinner)findViewById(R.id.spinner)).setOnItemSelectedListener(this);
 
         cookieButton = findViewById(R.id.cookieButton);
-        cookieButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("Cookie button ", "is clicked");
-                cookieClicked = true;
-            }
+        cookieButton.setOnClickListener(v -> {
+            Log.i("Cookie button ", "is clicked");
+            cookieClicked = true;
         });
 
         adsButton = findViewById(R.id.adsButton);
@@ -144,7 +141,8 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
     }
 
     private List<HttpInterceptorFactory> adsInterceptor() {
-        HttpInterceptorFactory adInterceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector(LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList)));
+        //HttpInterceptorFactory adInterceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector(LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList)));
+        HttpInterceptorFactory adInterceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector());
         return Arrays.asList(adInterceptor);
     }
 

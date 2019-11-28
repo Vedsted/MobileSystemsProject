@@ -8,28 +8,30 @@ import com.github.megatronking.netbare.http.HttpBody;
 import com.github.megatronking.netbare.http.HttpRequest;
 import com.github.megatronking.netbare.http.HttpRequestHeaderPart;
 import com.github.megatronking.netbare.http.HttpResponse;
-import com.github.megatronking.netbare.http.HttpResponseHeaderPart;
 import com.github.megatronking.netbare.injector.BlockedHttpInjector;
 import com.github.megatronking.netbare.injector.InjectorCallback;
-import com.github.megatronking.netbare.injector.SimpleHttpInjector;
-import com.github.megatronking.netbare.stream.ByteStream;
-import com.github.megatronking.netbare.stream.Stream;
 
-import org.apache.http.params.HttpParams;
-
+import java.io.Closeable;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.HashSet;
+import java.util.Timer;
 
-public class AdvertisementInjector extends SimpleHttpInjector {
+public class AdvertisementInjector extends BlockedHttpInjector {
 
     private HttpRequest httpRequest;
+    private HttpRequestHeaderPart requestHeaderPart;
     private HashSet<String> blacklist;
 
-
-    public AdvertisementInjector(HashSet<String> blacklist) {
-        this.blacklist = blacklist;
+    public AdvertisementInjector() {
+        this.blacklist = new HashSet<>();
+        this.blacklist.add("sso.sdu.dk");
     }
+
+
+  //  public AdvertisementInjector(HashSet<String> blacklist) {
+
+    //    this.blacklist = blacklist;
+   // }
 
     @Override
     public boolean sniffRequest(@NonNull HttpRequest request) {
@@ -41,7 +43,6 @@ public class AdvertisementInjector extends SimpleHttpInjector {
                 return true;
             }
         }
-
         Log.i("AdvertisementInjector", "Passage allowed for url: " + httpRequest.url());
         return false;
     }
@@ -55,10 +56,8 @@ public class AdvertisementInjector extends SimpleHttpInjector {
     public void onRequestInject(HttpRequestHeaderPart header, InjectorCallback callback) { }
 
     @Override
-    public void onRequestInject(HttpRequest request, HttpBody body, InjectorCallback callback) throws IOException {
-          httpRequest = request;
-          ByteStream byteStream = new ByteStream(new byte[1]);
-          callback.onFinished(byteStream);
+    public void onRequestInject(HttpRequest request, HttpBody body, InjectorCallback callback) {
+
     }
 
     @Override
