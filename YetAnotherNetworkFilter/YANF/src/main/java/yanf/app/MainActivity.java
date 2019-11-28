@@ -144,14 +144,11 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
     }
 
     private List<HttpInterceptorFactory> adsInterceptor() {
-        //HttpInterceptorFactory adInterceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector(loadedBlackList));
         HttpInterceptorFactory adInterceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector(LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList)));
         return Arrays.asList(adInterceptor);
     }
 
     private List<HttpInterceptorFactory> cookiesInterceptor() {
-       // HashSet<String> list = LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList);
-       // HttpInterceptorFactory cookieInterceptor = HttpInjectInterceptor.createFactory(new CookieInterceptor(loadedBlackList));
         HttpInterceptorFactory cookieInterceptor = HttpInjectInterceptor.createFactory(new CookieInterceptor(LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList)));
         return Arrays.asList(cookieInterceptor);
     }
@@ -163,15 +160,5 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) { }
-
-   // private List<HttpInterceptorFactory> interceptorFactories() {
-        //LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList);
-            // HttpInterceptorFactory cookieInterceptor = HttpInjectInterceptor.createFactory(new CookieInterceptor(this.blackList.getDomains(this.currentlySelectedBlackList)));
-            // HttpInterceptorFactory adsInterceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector(this.blackList.getDomains(this.currentlySelectedBlackList)));
-          //  HttpInterceptorFactory interceptor = HttpInjectInterceptor.createFactory(new CookieInterceptor());
-          //  HttpInterceptorFactory adsInterceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector());
-
-       // return Arrays.asList(adsInterceptor);
-      //  }
 
     }
