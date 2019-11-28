@@ -141,8 +141,7 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
     }
 
     private List<HttpInterceptorFactory> adsInterceptor() {
-        //HttpInterceptorFactory adInterceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector(LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList)));
-        HttpInterceptorFactory adInterceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector());
+        HttpInterceptorFactory adInterceptor = HttpInjectInterceptor.createFactory(new AdvertisementInjector(LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList)));
         return Arrays.asList(adInterceptor);
     }
 

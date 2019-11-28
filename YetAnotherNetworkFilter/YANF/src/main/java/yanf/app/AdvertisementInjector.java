@@ -1,6 +1,5 @@
 package yanf.app;
 
-import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -11,27 +10,18 @@ import com.github.megatronking.netbare.http.HttpResponse;
 import com.github.megatronking.netbare.injector.BlockedHttpInjector;
 import com.github.megatronking.netbare.injector.InjectorCallback;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.util.HashSet;
-import java.util.Timer;
 
 public class AdvertisementInjector extends BlockedHttpInjector {
 
     private HttpRequest httpRequest;
-    private HttpRequestHeaderPart requestHeaderPart;
     private HashSet<String> blacklist;
 
-    public AdvertisementInjector() {
-        this.blacklist = new HashSet<>();
-        this.blacklist.add("sso.sdu.dk");
+
+    public AdvertisementInjector(HashSet<String> blacklist) {
+
+        this.blacklist = blacklist;
     }
-
-
-  //  public AdvertisementInjector(HashSet<String> blacklist) {
-
-    //    this.blacklist = blacklist;
-   // }
 
     @Override
     public boolean sniffRequest(@NonNull HttpRequest request) {
@@ -56,9 +46,7 @@ public class AdvertisementInjector extends BlockedHttpInjector {
     public void onRequestInject(HttpRequestHeaderPart header, InjectorCallback callback) { }
 
     @Override
-    public void onRequestInject(HttpRequest request, HttpBody body, InjectorCallback callback) {
-
-    }
+    public void onRequestInject(HttpRequest request, HttpBody body, InjectorCallback callback) { }
 
     @Override
     public void onRequestFinished(HttpRequest request) { }
