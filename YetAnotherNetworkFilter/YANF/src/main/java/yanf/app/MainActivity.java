@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.ToggleButton;
 
 import com.github.megatronking.netbare.NetBare;
 import com.github.megatronking.netbare.NetBareConfig;
@@ -24,7 +23,6 @@ import com.github.megatronking.netbare.ssl.JKS;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,11 +34,6 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
     private NetBare mNetBare;
 
     private Button mActionButton;
-    private ToggleButton adsButton;
-    private ToggleButton cookieButton;
-
-    private boolean adsClicked = false;
-    private boolean cookieClicked = false;
 
     private String currentlySelectedBlackList;
     private Map<String, HttpInjector> injectors = new HashMap<>();
@@ -55,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
         setContentView(R.layout.activity_main);
 
         initializeFilterSelection();
-        initializeInterceptors();
+        initializeInjectors();
         initializeSwitches();
 
         mNetBare = NetBare.get();
@@ -94,8 +87,8 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
         currentlySelectedBlackList = "None";
     }
 
-    private void initializeInterceptors() {
-        this.cookieInjector = new CookieInterceptor(LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList));
+    private void initializeInjectors() {
+        this.cookieInjector = new CookieInjector(LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList));
         this.adsInjector = new AdvertisementInjector(LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList));
     }
 

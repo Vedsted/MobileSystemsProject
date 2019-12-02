@@ -14,12 +14,12 @@ import com.github.megatronking.netbare.stream.ByteStream;
 import java.io.IOException;
 import java.util.HashSet;
 
-public class CookieInterceptor extends SimpleHttpInjector {
+public class CookieInjector extends SimpleHttpInjector {
     private HttpRequest httpRequest;
     private HttpRequestHeaderPart mHoldRequestHeader;
     private HashSet<String> blacklist;
 
-    public CookieInterceptor(HashSet<String> blacklist) {
+    public CookieInjector(HashSet<String> blacklist) {
         this.blacklist = blacklist;
     }
 
