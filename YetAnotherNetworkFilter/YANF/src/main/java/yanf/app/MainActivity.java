@@ -2,16 +2,23 @@ package yanf.app;
 
 
 import android.app.Activity;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.github.megatronking.netbare.NetBare;
 import com.github.megatronking.netbare.NetBareConfig;
@@ -24,10 +31,12 @@ import com.github.megatronking.netbare.ssl.JKS;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-public class MainActivity extends AppCompatActivity implements NetBareListener, AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NetBareListener, AdapterView.OnItemSelectedListener, StatisticsFragment.OnFragmentInteractionListener {
     private static final String TAG = "MainActivity";
     private int REQUEST_CODE_PREPARE = 1;
 
@@ -39,16 +48,18 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
     private Map<String, HttpInjector> injectors = new HashMap<>();
     private static final String COOKIE_INJECTOR = "COOKIE_INJECTOR";
     private static final String ADS_INJECTOR = "ADS_INJECTOR";
-    private HttpInjector cookieInjector;
-    private HttpInjector adsInjector;
+
+    private StatisticsModel statisticsModel;
+    private final StatisticsFragment statisticsFragment = new StatisticsFragment();
+    private boolean statisticsVisible = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        statisticsModel = ViewModelProviders.of(this).get(StatisticsModel.class);
         initializeFilterSelection();
-        initializeInjectors();
         initializeSwitches();
 
         mNetBare = NetBare.get();
@@ -87,9 +98,23 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
         currentlySelectedBlackList = "None";
     }
 
-    private void initializeInjectors() {
-        this.cookieInjector = new CookieInjector(LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList));
-        this.adsInjector = new AdvertisementInjector(LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList));
+    private HttpInjector getAdvertisementInjector() {
+        ObservableSimpleHttpInjector adsInjector = new AdvertisementInjector(getBlackListedDomains());
+        adsInjector.addHitListener(this.statisticsModel);
+
+        return adsInjector;
+    }
+
+    private HttpInjector getCookieInjector() {
+        ObservableSimpleHttpInjector cookieInjector = new CookieInjector(getBlackListedDomains());
+        cookieInjector.addHitListener(this.statisticsModel);
+
+        return cookieInjector;
+    }
+
+    private HashSet<String> getBlackListedDomains() {
+        HashSet<String> blacklistedDomains = LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList);
+        return blacklistedDomains;
     }
 
     private void initializeSwitches() {
@@ -100,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     if (!injectors.containsKey(COOKIE_INJECTOR)) {
-                        injectors.put(COOKIE_INJECTOR, cookieInjector);
+                        injectors.put(COOKIE_INJECTOR, getCookieInjector());
                     }
                     // Set the style of the switch
                     switchCookies.setSwitchTextAppearance(getApplicationContext(), R.style.SwitchTextAppearanceOn);
@@ -118,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     if (!injectors.containsKey(ADS_INJECTOR)) {
-                        injectors.put(ADS_INJECTOR, adsInjector);
+                        injectors.put(ADS_INJECTOR, getAdvertisementInjector());
                     }
                     // Set the style of the switch
                     switchAds.setSwitchTextAppearance(getApplicationContext(), R.style.SwitchTextAppearanceOn);
@@ -204,4 +229,60 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) { }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.statistics_menu:
+                showStatistics();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void showStatistics() {
+
+        if (!statisticsVisible) {
+            FragmentManager manager = getSupportFragmentManager();
+            manager.beginTransaction()
+                    .add(R.id.statisticsView, statisticsFragment).commit();
+
+            findViewById(R.id.action).setVisibility(View.GONE);
+            statisticsVisible = true;
+        } else {
+
+            FragmentManager manager = getSupportFragmentManager();
+            manager.beginTransaction()
+                    .remove(statisticsFragment).commit();
+
+            findViewById(R.id.action).setVisibility(View.VISIBLE);
+            statisticsVisible = false;
+        }
+
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    public void collectStatistics(View view) {
+        TextView txtView = findViewById(R.id.txtHits);
+        txtView.setText(""); // Clear
+        StringBuilder sb = new StringBuilder();
+
+        for (Map.Entry<String, Integer> pair : statisticsModel.getNumberOfHits().entrySet()) {
+            sb.append(pair.getKey()).append(" ").append(pair.getValue()).append("\n");
+        }
+
+        txtView.setText(sb.toString());
+    }
 }

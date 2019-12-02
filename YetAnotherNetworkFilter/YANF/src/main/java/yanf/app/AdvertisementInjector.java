@@ -12,7 +12,7 @@ import com.github.megatronking.netbare.injector.InjectorCallback;
 
 import java.util.HashSet;
 
-public class AdvertisementInjector extends BlockedHttpInjector {
+public class AdvertisementInjector extends ObservableSimpleHttpInjector {
 
     private HttpRequest httpRequest;
     private HashSet<String> blacklist;
@@ -30,6 +30,7 @@ public class AdvertisementInjector extends BlockedHttpInjector {
         for (String s : blacklist) {
             if (httpRequest.url().contains(s)) {
                 Log.i("AdvertisementInjector", httpRequest.url() + " is blocked");
+                this.notifyHitListeners(new Hit(httpRequest.url(), httpRequest.host(), Hit.HitType.ADVERTISEMENT));
                 return true;
             }
         }
