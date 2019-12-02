@@ -1,20 +1,15 @@
 package yanf.app;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.github.megatronking.netbare.NetBareUtils;
-import com.github.megatronking.netbare.http.HttpBody;
 import com.github.megatronking.netbare.http.HttpRequest;
 import com.github.megatronking.netbare.http.HttpRequestHeaderPart;
 import com.github.megatronking.netbare.injector.InjectorCallback;
-import com.github.megatronking.netbare.injector.SimpleHttpInjector;
-import com.github.megatronking.netbare.stream.ByteStream;
 
 import java.io.IOException;
 import java.util.HashSet;
 
-public class CookieInjector extends SimpleHttpInjector {
+public class CookieInjector extends ObservableSimpleHttpInjector {
     private HttpRequest httpRequest;
     private HttpRequestHeaderPart mHoldRequestHeader;
     private HashSet<String> blacklist;
@@ -29,6 +24,7 @@ public class CookieInjector extends SimpleHttpInjector {
         for (String s : blacklist) {
             if (httpRequest.url().contains(s)){
                 Log.i("Cookie Remover", "removing cookies for: " + httpRequest.url());
+                this.notifyHitListeners(new Hit(httpRequest.url(), httpRequest.host(), Hit.HitType.COOKIE));
                 return true;
             }
         }
