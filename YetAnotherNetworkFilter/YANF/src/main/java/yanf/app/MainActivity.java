@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
 
         ((Spinner)findViewById(R.id.spinner)).setOnItemSelectedListener(this);
 
-        cookieButton = findViewById(R.id.cookieButton);
+        /*cookieButton = findViewById(R.id.cookieButton);
         cookieButton.setOnClickListener(v -> {
             Log.i("Cookie button ", "is clicked");
             cookieClicked = true;
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
             Log.i("Advertisement button ", "is clicked");
             adsClicked = true;
         });
-
+*/
         mNetBare = NetBare.get();
 
         mActionButton = findViewById(R.id.action);

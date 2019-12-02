@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- https://stackoverflow.com/questions/12706874/how-to-change-textcolor-of-switch-in-android -->
+    <style name="SwitchTextAppearance" parent="@android:style/TextAppearance.Holo.Small">
+        <item name="android:textColor">#ff0000</item>
+    </style>
+
 </resources>
