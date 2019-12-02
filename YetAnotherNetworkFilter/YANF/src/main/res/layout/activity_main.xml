@@ -12,14 +12,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/start_yanf"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch2" />
+        app:layout_constraintTop_toBottomOf="@+id/switchAds" />
 
     <Spinner
         android:id="@+id/spinner"
@@ -62,7 +61,7 @@
         app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/switchCookies"
         android:layout_width="257dp"
         android:layout_height="54dp"
         android:layout_marginStart="16dp"
@@ -71,7 +70,7 @@
         android:scrollbarSize="4dp"
         android:showText="true"
         android:text="Cookies"
-        android:switchTextAppearance="@style/SwitchTextAppearance"
+        android:switchTextAppearance="@style/SwitchTextAppearanceOff"
         android:textOff="Allow"
         android:textOn="Block"
         android:thumb="@drawable/switch_selector"
@@ -81,7 +80,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <Switch
-        android:id="@+id/switch2"
+        android:id="@+id/switchAds"
         android:layout_width="257dp"
         android:layout_height="54dp"
         android:layout_marginStart="16dp"
@@ -90,12 +89,13 @@
         android:scrollbarSize="4dp"
         android:showText="true"
         android:text="Ads"
+        android:switchTextAppearance="@style/SwitchTextAppearanceOff"
         android:textOff="Allow"
         android:textOn="Block"
         android:thumb="@drawable/switch_selector"
         android:track="@drawable/switch_track"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch1" />
+        app:layout_constraintTop_toBottomOf="@+id/switchCookies" />
 
 </android.support.constraint.ConstraintLayout>
