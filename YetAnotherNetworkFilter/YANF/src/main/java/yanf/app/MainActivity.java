@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements NetBareListener, AdapterView.OnItemSelectedListener, StatisticsFragment.OnFragmentInteractionListener {
     private static final String TAG = "MainActivity";
