@@ -19,7 +19,6 @@ public class AdvertisementInjector extends BlockedHttpInjector {
 
 
     public AdvertisementInjector(HashSet<String> blacklist) {
-
         this.blacklist = blacklist;
     }
 

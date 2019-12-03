@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
             if (mNetBare.isActive()) {
                 mNetBare.unregisterNetBareListener(this);
                 mNetBare.stop();
+
             } else {
                 prepareNetBare();
             }
@@ -149,6 +150,8 @@ public class MainActivity extends AppCompatActivity implements NetBareListener, 
         HttpInterceptorFactory cookieInterceptor = HttpInjectInterceptor.createFactory(new CookieInterceptor(LoadBlackList.loadBlackList(this).getDomains(currentlySelectedBlackList)));
         return Arrays.asList(cookieInterceptor);
     }
+
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
