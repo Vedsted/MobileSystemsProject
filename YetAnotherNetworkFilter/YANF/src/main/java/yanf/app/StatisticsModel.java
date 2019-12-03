@@ -5,7 +5,9 @@ import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,6 +43,19 @@ public class StatisticsModel extends ViewModel implements HitListener {
                 .map(entry -> new Pair<>(entry.getKey(), entry.getValue().size()))
                 .collect(Collectors.toMap(pair -> pair.first, pair -> pair.second));
 
-        return numberOfHitstPerDomain;
+        return sortByValue(numberOfHitstPerDomain);
+    }
+
+    private static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
+        list.sort(Map.Entry.comparingByValue());
+        Collections.reverse(list);
+
+        Map<K, V> result = new LinkedHashMap<>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+
+        return result;
     }
 }
