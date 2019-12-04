@@ -31,6 +31,7 @@ public class StatisticsModel extends ViewModel implements HitListener {
 
         if (!domainStats.containsKey(domain)) {
             domainStats.put(domain, new ArrayList<>());
+            domainStats.get(domain).add(hit);
         } else {
             domainStats.get(domain).add(hit);
         }
